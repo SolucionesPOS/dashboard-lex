@@ -14,29 +14,22 @@ $request_date_end = isset($_REQUEST["date_end"]) ? $_REQUEST["date_end"] : date(
 
 $fecha = date("Y-m-d");
 
-$studios =find_by_sql("SELECT u.nombre As Vendedor, 
-c.cliente As Cliente,
-  c.nombre As NombreC, 
-  p.descripcion As Estudio, 
-  Sum(i.cantidad) As Cantidad, 
-  v.hora As Creado 
-  FROM ventparts_temp As i 
-  INNER JOIN productos As p On i.articulo = p.producto 
-  INNER JOIN ventas_temp As v ON i.ventas_id = v.id 
-  INNER JOIN users As u On v.users_id = u.id 
-  INNER JOIN clientes AS c On v.clientes_id = c.id 
-  WHERE v.sinc = 0 AND v.fecha ='{$fecha}' GROUP BY u.nombre, c.cliente, c.nombre, p.descripcion, i.cantidad, v.hora ORDER BY u.nombre, c.nombre asc ", true);
+$studios =find_by_sql("SELECT u.name As Vendedor, c.cliente As Cliente, c.nombre As NombreC, p.descripcion As Estudio, 
+Sum(i.cantidad) As Cantidad, v.hora As Creado FROM partida_temps As i 
+INNER JOIN productos As p On i.productos_id = p.id INNER JOIN venta_temps As v ON i.ventas_id = v.id 
+INNER JOIN users As u On v.users_id = u.id INNER JOIN clientes AS c On v.clientes_id = c.id WHERE v.fecha ='{$fecha}' 
+GROUP BY u.name, c.cliente, c.nombre, p.descripcion, i.cantidad, v.hora ORDER BY u.name, c.nombre asc", true);
 
 
 
 //REPORTE DE VENTAS POR SUCURSAL
-$sales = find_by_sql("SELECT u.nombre As Recolector, SUM(i.cantidad) As Cantidad 
-FROM ventparts_temp As i 
-INNER JOIN ventas_temp As v ON i.ventas_id = v.id
+$sales = find_by_sql("SELECT u.name As Recolector, SUM(i.cantidad) As Cantidad 
+FROM partida_temps As i 
+INNER JOIN venta_temps As v ON i.ventas_id = v.id
 INNER JOIN users As u On v.users_id = u.id	
-INNER JOIN productos As p On i.articulo = p.producto
-WHERE v.sinc = 0 AND v.fecha = '{$fecha}' 
-GROUP BY u.nombre ", true);
+INNER JOIN productos As p On i.productos_id = p.id
+WHERE  v.fecha = '{$fecha}' 
+GROUP BY u.name ", true);
 
 
 ?>

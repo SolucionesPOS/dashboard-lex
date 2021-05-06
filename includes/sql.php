@@ -85,7 +85,7 @@ function authenticate($username = '', $password = '')
   global $db;
   $username = $db->escape($username);
   $password = $db->escape($password);
-  $sql  = sprintf("SELECT * FROM users WHERE usuario ='%s' LIMIT 1", $username);  
+  $sql  = sprintf("SELECT * FROM users WHERE vend ='%s' LIMIT 1", $username);  
   $result = $db->query($sql);  
 
   if ($db->num_rows($result)) {

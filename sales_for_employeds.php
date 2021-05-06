@@ -13,8 +13,14 @@ $request_date_end = isset($_REQUEST["date_end"]) ? $_REQUEST["date_end"] : date(
 
 
 //REPORTE DE VENTAS POR SUCURSAL
-$sales = find_by_sql("SELECT u.nombre As Vendedor, v.fecha, p.producto, p.descripcion, SUM(i.cantidad) As cantidad, i.precio, SUM(i.precio * i.cantidad) AS total FROM ventparts_temp As i INNER JOIN ventas_temp As v On v.id = i.ventas_id INNER JOIN productos As p On i.productos_id = p.id INNER JOIN users As u on v.users_id = u.id INNER JOIN clientes As c On c.cliente = v.cliente WHERE v.sinc = 1 AND v.fecha >= '{$request_date_start}' AND v.fecha <= '{$request_date_end}' GROUP BY  p.producto, p.descripcion, v.fecha, i.precio, u.usuario ORDER BY v.fecha, u.usuario asc
-", true);
+$sales = find_by_sql(" SELECT u.name As Vendedor, v.fecha, p.articulo, p.descripcion, SUM(i.cantidad) As cantidad, i.precio, SUM(i.precio * i.cantidad) AS total 
+FROM partida_temps As i 
+INNER JOIN venta_temps As v On v.id = i.ventas_id
+INNER JOIN productos As p On i.productos_id = p.id 
+INNER JOIN users As u on v.users_id = u.id 
+INNER JOIN clientes As c On c.id = v.clientes_id
+WHERE v.fecha >= '{$request_date_start}' AND v.fecha <= '{$request_date_end}' 
+GROUP BY  p.articulo, p.descripcion, v.fecha, i.precio, u.name ORDER BY v.fecha, u.name asc", true);
 
 
 ?>
@@ -24,69 +30,6 @@ $sales = find_by_sql("SELECT u.nombre As Vendedor, v.fecha, p.producto, p.descri
 <div class="main-content">
     <section class="section">
         <div class="section-body">
-                  <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4>Bitacora de Recoleccion</h4>
-                        </div>
-                        <div class="card-body">
-                      
-                            <hr>
-
-                            <div class="table-responsive">
-                                                                <table class="table table-striped table-hover" id="tableExport" class="table table-striped" id="table-1" style="width:100%;">
-
-                                    <thead>
-                                        <tr>
-                                       
-                                            <th>Nombre</th>                                       
-                                            <th>Cantidad</th>                                         
-                                            <th>Estatus</s></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                        if (!empty($sales)) {
-                                            foreach ($sales as $key => $item) {
-                                        ?>
-                                                <tr>
-                                                
-                                                    <td><?= $item["Recolector"] ?></td>
-                                                 
-                                                    <td><?= $item["Cantidad"] ?></td>
-
-                                                    <?php if ($item['Cantidad'] >= 5 AND $item['Cantidad'] <= 10 ) { ?>
-                                                      <td> <div class="badge badge-warning">Prevenido</div></td>
-                                                    </td>
-                                                    <?php } ?>     
-                                                    <?php if ($item['Cantidad'] <  5) { ?>
-                                                      <td> <div class="badge badge-success">Nomal</div></td>
-                                                    </td>
-                                                    <?php } ?>     
-                                                    <?php if ($item['Cantidad'] > 10 ) { ?>
-                                                      <td> <div class="badge badge-danger">Recolectar</div></td>
-                                                    </td>
-                                                    <?php } ?>     
-                                                   
-                                                </tr>
-                                            <?php
-                                            }
-                                        } else {
-                                            ?>
-                                            <tr>
-                                                <td colspan="2">No hay dato para mostrar</td>
-                                            </tr>
-                                        <?php
-                                        }
-                                        ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="row">
                 <div class="col-12">
                     <div class="card">
